@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>แผนการดำเนินงาน — ที่ทำงานเสริม (ระบบ Cloud)</title>
+<title>แผนการดำเนินงาน (PRI) — ระบบ Cloud</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap');
 :root {
@@ -152,7 +152,7 @@ function mkDept(name, rows) { return { id: uid('dept'), name, rows }; }
 function seedProject(name, depts) { return { id: uid('proj'), name, color: '#3A2E6E', departments: depts }; }
 function defaultState() {
   return { 
-    projects: [seedProject('โครงการเสริมตัวอย่าง', [ mkDept('หน่วยงาน ก.', [mkRow([], 'แถว 1')]) ])],
+    projects: [seedProject('โครงการ PRI ตัวอย่าง', [ mkDept('หน่วยงาน ก.', [mkRow([], 'แถว 1')]) ])],
     colors: JSON.parse(JSON.stringify(DEFAULT_COLORS)),
     viewRange: { start: dateToInputStr(beDate(2569,1,1)), end: dateToInputStr(beDate(2574,12,31)) },
     overviewSettings: { tab1: { name: '📊 ภาพรวมทั้งหมด', color: '' }, tab2: { name: '🛣️ รายละเอียดภาพรวมโครงการ', color: '' } }
@@ -244,7 +244,7 @@ function render() {
 function renderTopbar() {
   const bar = document.createElement('div');
   bar.className = 'topbar';
-  bar.innerHTML = `<div class="brand"><div class="brand-mark">แผน<br>เสริม</div><div class="brand-text"><div class="brand-title">แผนการดำเนินงาน (PRI)</div><div class="brand-sub">✅ อัปเดตข้อมูลล่าสุดบนคลาวด์แล้ว</div></div></div>`;
+  bar.innerHTML = `<div class="brand"><div class="brand-mark">แผน<br>PRI</div><div class="brand-text"><div class="brand-title">แผนการดำเนินงาน (PRI)</div><div class="brand-sub">✅ อัปเดตข้อมูลล่าสุดบนคลาวด์แล้ว</div></div></div>`;
   return bar;
 }
 function renderTabs() {
@@ -258,7 +258,7 @@ function renderTabs() {
   ov.innerHTML = `<span>${escapeHTML(ovSetting.name || '📊 ภาพรวมทั้งหมด')}</span>`;
   ov.onclick = () => { view = { type: 'overview' }; render(); };
   ov.oncontextmenu = (e) => { e.preventDefault(); openOverviewSettingsModal('tab1'); };
-  const ovEditBtn = document.createElement('span'); ovEditBtn.className = 'tab-color-btn'; ovEditBtn.textContent = '✎';
+  const ovEditBtn = document.createElement('span'); ovEditBtn.className = 'tab-color-btn'; ovEditBtn.style.right = '8px'; ovEditBtn.textContent = '✎';
   ovEditBtn.onclick = (e) => { e.stopPropagation(); openOverviewSettingsModal('tab1'); };
   ov.appendChild(ovEditBtn); ov.style.paddingRight = '26px'; wrap.appendChild(ov);
 
@@ -269,7 +269,7 @@ function renderTabs() {
   lanesTab.innerHTML = `<span>${escapeHTML(lanesSetting.name || '🛣️ รายละเอียดภาพรวมโครงการ')}</span>`;
   lanesTab.onclick = () => { view = { type: 'lanes' }; render(); };
   lanesTab.oncontextmenu = (e) => { e.preventDefault(); openOverviewSettingsModal('tab2'); };
-  const lanesEditBtn = document.createElement('span'); lanesEditBtn.className = 'tab-color-btn'; lanesEditBtn.textContent = '✎';
+  const lanesEditBtn = document.createElement('span'); lanesEditBtn.className = 'tab-color-btn'; lanesEditBtn.style.right = '8px'; lanesEditBtn.textContent = '✎';
   lanesEditBtn.onclick = (e) => { e.stopPropagation(); openOverviewSettingsModal('tab2'); };
   lanesTab.appendChild(lanesEditBtn); lanesTab.style.paddingRight = '26px'; wrap.appendChild(lanesTab);
 
@@ -608,7 +608,7 @@ function openActivityModal(projectId, deptId, rowId, actId) {
 
   let chosenColor = existing ? existing.color : state.colors[0].hex;
   const picker = modal.querySelector('#colorPicker');
-  state.colors.forEach(c => {
+  state.colors.colors?.forEach?.(c => {}) || DEFAULT_COLORS.forEach(c => {
     const sw = document.createElement('div'); sw.className = 'color-swatch' + (c.hex === chosenColor ? ' selected' : '');
     sw.style.background = c.hex; sw.onclick = () => { chosenColor = c.hex; [...picker.children].forEach(ch => ch.classList.remove('selected')); sw.classList.add('selected'); };
     picker.appendChild(sw);
