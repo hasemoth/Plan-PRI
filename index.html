@@ -672,7 +672,7 @@ function openOverviewSettingsModal(tabKey) {
     sw.onclick = () => { chosenColor = c.hex; [...picker.children].forEach(ch => ch.classList.remove('selected')); sw.classList.add('selected'); }; picker.appendChild(sw);
   });
   const actions = modal.querySelector('#modalActions'), saveBtn = document.createElement('button'); saveBtn.className = 'primary-btn'; saveBtn.textContent = 'บันทึก';
-  saveBtn.onclick = async () => { setting.name = modal.querySelector('#ovNameInput'].value.trim() || setting.name; setting.color = chosenColor; closeModal(overlay); await persistAndRender(); }; actions.appendChild(saveBtn);
+  saveBtn.onclick = async () => { setting.name = modal.querySelector('#ovNameInput').value.trim() || setting.name; setting.color = chosenColor; closeModal(overlay); await persistAndRender(); }; actions.appendChild(saveBtn);
   const cancelBtn = document.createElement('button'); cancelBtn.className = 'ghost-btn'; cancelBtn.textContent = 'ยกเลิก'; cancelBtn.onclick = () => closeModal(overlay); actions.appendChild(cancelBtn);
 }
 function editColorsModal() {
