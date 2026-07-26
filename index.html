@@ -136,7 +136,6 @@ function todayBangkokIndex() {
   return indexFromDate(new Date(Date.UTC(get('year'), get('month') - 1, get('day'))));
 }
 
-// 🔗 ใช้ URL ที่คุณระบุมาเรียบร้อยแล้ว
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyP9BKc6r9MnbgNOZAu5bonhx7xuhGxD5Uf-VTmQS7xz8iOHo4NoLI4954Qkil7m5MO/exec'; 
 
 let state = null, view = { type: 'overview' }, zoom = 'month', modalOpen = false, isSaving = false, dragMode = false;
@@ -162,7 +161,7 @@ async function loadState() {
   try {
     const res = await fetch(SCRIPT_URL);
     const text = await res.text();
-    if (text.trim().startsWith('<')) { alert("⚠️ การเข้าถึงถูกปฏิเสธ! โปรดตรวจสอบสิทธิ์การ Deploy Apps Script"); return null; }
+    if (text.trim().startsWith('<')) { alert("⚠️ การเข้าถึงถูกปฏิเสธ!"); return null; }
     const parsed = JSON.parse(text);
     if (Object.keys(parsed).length > 0) {
       if (!parsed.colors) parsed.colors = JSON.parse(JSON.stringify(DEFAULT_COLORS));
@@ -403,7 +402,7 @@ function buildDeptBlock(project, dept, colw, totalWidth, rStart, rEnd) {
   const ctrls = document.createElement('div'); ctrls.className = 'dept-ctrls';
   const addRowBtn = document.createElement('button'); addRowBtn.className = 'icon-btn'; addRowBtn.textContent = '+ แถว'; addRowBtn.onclick = () => addRow(project.id, dept.id);
   const renameDeptBtn = document.createElement('button'); renameDeptBtn.className = 'icon-btn'; renameDeptBtn.textContent = '✎'; renameDeptBtn.onclick = () => renameDepartment(project.id, dept.id);
-  const delDeptBtn = document.createElement('button'); delDeptBtn.className = 'icon-btn danger'; delDeptBtn.textContent = '🗑'; delDeptBtn.onclick = () => deleteDepartment(project.id, dept.id);
+  const delDeptBtn = document.createElement('button'); renameDeptBtn.className = 'icon-btn danger'; delDeptBtn.textContent = '🗑'; delDeptBtn.onclick = () => deleteDepartment(project.id, dept.id);
   ctrls.append(addRowBtn, renameDeptBtn, delDeptBtn); deptInfo.appendChild(ctrls);
 
   const rowNamesCol = document.createElement('div'); rowNamesCol.className = 'dept-row-names';
@@ -626,7 +625,7 @@ function openActivityModal(projectId, deptId, rowId, actId) {
   actions.appendChild(saveBtn);
 
   if (existing) {
-    const delBtn = document.createElement('button'); delBtn.className = 'danger-btn'; delBtn.textContent = 'ลบกิจกรรม';
+    const delBtn = document.createElement('button'); delBtn.className, delBtn.className = 'danger-btn'; delBtn.textContent = 'ลบกิจกรรม';
     delBtn.onclick = async () => { r.activities = r.activities.filter(a => a.id !== existing.id); closeModal(overlay); await persistAndRender(); };
     actions.appendChild(delBtn);
   }
@@ -673,7 +672,7 @@ function openOverviewSettingsModal(tabKey) {
     sw.onclick = () => { chosenColor = c.hex; [...picker.children].forEach(ch => ch.classList.remove('selected')); sw.classList.add('selected'); }; picker.appendChild(sw);
   });
   const actions = modal.querySelector('#modalActions'), saveBtn = document.createElement('button'); saveBtn.className = 'primary-btn'; saveBtn.textContent = 'บันทึก';
-  saveBtn.onclick = async () => { setting.name = modal.querySelector('#ovNameInput').value.trim() || setting.name; setting.color = chosenColor; closeModal(overlay); await persistAndRender(); }; actions.appendChild(saveBtn);
+  saveBtn.onclick = async () => { setting.name = modal.querySelector('#ovNameInput'].value.trim() || setting.name; setting.color = chosenColor; closeModal(overlay); await persistAndRender(); }; actions.appendChild(saveBtn);
   const cancelBtn = document.createElement('button'); cancelBtn.className = 'ghost-btn'; cancelBtn.textContent = 'ยกเลิก'; cancelBtn.onclick = () => closeModal(overlay); actions.appendChild(cancelBtn);
 }
 function editColorsModal() {
@@ -692,7 +691,7 @@ function addRow(projectId, deptId) { const d = state.projects.find(x => x.id ===
 function renameRow(projectId, deptId, rowId) { const r = state.projects.find(x => x.id === projectId).departments.find(x => x.id === deptId).rows.find(x => x.id === rowId); openTextModal('เปลี่ยนชื่อแถว', 'ชื่อสำหรับแถวนี้', r.name, async (name) => { r.name = name || 'แถว'; await persistAndRender(); }); }
 function deleteRow(projectId, deptId, rowId) { openConfirmModal('ลบแถวนี้?', 'กิจกรรมจะถูกลบ', async () => { const d = state.projects.find(x => x.id === projectId).departments.find(x => x.id === deptId); d.rows = d.rows.filter(r => r.id !== rowId); if (d.rows.length === 0) d.rows.push(mkRow([], 'แถว 1')); await persistAndRender(); }); }
 function openTextModal(title, fieldLabel, initial, onSave) {
-  modalOpen = true; const overlay = document.createElement('div'); overlay.className = 'modal-overlay'; const modal = document.createElement('div'); modal.className = 'modal';
+  modalOpen = true; const overlay = document.createElement('div'); overlay.className = 'modal-overlay'; const modal = document.createElement('div'); modal.className, modal.className = 'modal';
   modal.innerHTML = `<h3>${escapeHTML(title)}</h3><label class="field-label">${escapeHTML(fieldLabel)}</label><input type="text" id="txtInput" class="text-input" value="${escapeHTML(initial)}"><div class="modal-actions" id="modalActions"></div>`;
   overlay.appendChild(modal); document.body.appendChild(overlay); const input = modal.querySelector('#txtInput'); setTimeout(() => input.focus(), 0);
   const actions = modal.querySelector('#modalActions'), saveBtn = document.createElement('button'); saveBtn.className = 'primary-btn'; saveBtn.textContent = 'บันทึก';
